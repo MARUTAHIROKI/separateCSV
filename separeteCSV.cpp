@@ -14,7 +14,7 @@ int main(){
     std::string line;
 
     if(csv_file.fail()){
-        std::cerr << "Failure" << std::endl;
+        std::cerr << "Failure to open CSV file" << std::endl;
         return -1;
     }
 
@@ -22,7 +22,6 @@ int main(){
     for(int i=0; i<5; i++){
         getline(csv_file, line);
         std::cout << line << std::endl;
-
     }
 
     return 0;
