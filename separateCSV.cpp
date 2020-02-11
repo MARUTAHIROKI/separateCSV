@@ -11,9 +11,9 @@
 #include <vector>
 
 // Divide text
-std::vector<std::string> split(std::string str, char del){
+std::vector<std::string> split(std::string str, char word){
 	int first = 0;
-	int last = (int)str.find_first_of(del);
+	int last = (int)str.find_first_of(word);
 
 	std::vector<std::string> result;
 
@@ -23,7 +23,7 @@ std::vector<std::string> split(std::string str, char del){
 		result.push_back(subStr);
 
 		first = last + 1;
-		last = (int)str.find_first_of(del, first);
+		last = (int)str.find_first_of(word, first);
 
 		if(last == std::string::npos) {
 			last = (int)str.size();
