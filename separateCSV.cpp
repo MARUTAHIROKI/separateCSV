@@ -32,7 +32,7 @@ std::vector<std::string> split(std::string str, char word){
 	return result;
 }
 
-int main(){
+int main(int argc, char *argv[]){
     std::ifstream csv_file("/Users/marurun/Downloads/TEST4003 江口.CSV");
     std::string line;
     std::vector<std::string> result;
@@ -43,10 +43,14 @@ int main(){
     }
 
     // while (getline(csv_file, line)){
-    for(int i=0; i<1; i++){
+    for(int i=0; i<5; i++){
         getline(csv_file, line);
         result = split(line, ',');
-        for(int j=0; j<result.size(); j++) std::cout << j << ", " << result[j] << std::endl;
+        for(int j=0; j<result.size(); j++){
+            if((j>=atoi(argv[1]))&&(j<=atoi(argv[2]))){
+                std::cout << j << ", " << result[j] << std::endl;
+            }
+        }
     }
 
     return 0;
