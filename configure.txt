@@ -1,0 +1,3 @@
+Path(relative or absolute):/Users/marurun/Downloads/TEST4003 江口.CSV
+Separated file num:3
+Interval:10
