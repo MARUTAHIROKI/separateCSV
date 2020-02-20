@@ -60,7 +60,7 @@ int readConfigFile(std::ifstream* config_file, int *num) {
 
 int main(int argc, char *argv[]){
     std::ifstream config_file("configure.txt");
-    std::ofstream out_csv("test.csv");
+    std::ofstream out_csv[256];
     
 	if (config_file.fail()) {
 		std::cerr << "Failed to read the config file." << std::endl;
@@ -71,24 +71,44 @@ int main(int argc, char *argv[]){
     std::string line;
     std::vector<std::string> result;
 
+    // 設定ファイルの読み込み
     readConfigFile(&config_file, &csv_num);
 
+    char filename[256];
+    for(int i=0; i<csv_num; i++){
+        sprintf(filename, "separated%03d.csv", i);
+        out_csv[i].open(filename);
+    }
+    
+    // CSVファイルを１行ずつ読み込んで，","で分割して一定間隔でCSVファイルに保存
     while(getline(csv_file, line)){
-    //for(int i=0; i<5; i++){
-        getline(csv_file, line);
+        int i=0;
+        int min_col=0, max_col=result.size() / csv_num;
+
         result = split(line, ',');
         for(int j=0; j<result.size(); j++){
-            if((j>=atoi(argv[1]))&&(j<=atoi(argv[2]))){
-                out_csv << result[j] << ",";
-                //std::cout << j << ", " << result[j] << std::endl;
+            if((j>=min_col)&&(j<=max_col)){
+                out_csv[i] << result[j] << ",";
+                if(max_col==j) {
+                    min_col += result.size() / csv_num;
+                    max_col += result.size() / csv_num;
+                    i++;
+                }
             }
         }
-        out_csv << std::endl;
+
+        // 改行
+        for(int k=0; k<csv_num; k++){
+            out_csv[k] << std::endl;
+        }
     }
 
+    // ファイルを閉じる
     config_file.close();
     csv_file.close();
-    out_csv.close();
+    for(int i=0; i<csv_num; i++){
+        out_csv[i].close();
+    }
 
     return 0;
 }

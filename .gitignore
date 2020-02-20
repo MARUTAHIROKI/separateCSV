@@ -35,4 +35,5 @@
 
 # user file
 test.txt
+.DS_Store
 .vscode/settings.json
