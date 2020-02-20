@@ -60,6 +60,8 @@ int readConfigFile(std::ifstream* config_file, int *num) {
 
 int main(int argc, char *argv[]){
     std::ifstream config_file("configure.txt");
+    std::ofstream out_csv("test.csv");
+    
 	if (config_file.fail()) {
 		std::cerr << "Failed to read the config file." << std::endl;
 		return -1;
@@ -71,19 +73,22 @@ int main(int argc, char *argv[]){
 
     readConfigFile(&config_file, &csv_num);
 
-    // while (getline(csv_file, line)){
-    for(int i=0; i<5; i++){
+    while(getline(csv_file, line)){
+    //for(int i=0; i<5; i++){
         getline(csv_file, line);
         result = split(line, ',');
         for(int j=0; j<result.size(); j++){
             if((j>=atoi(argv[1]))&&(j<=atoi(argv[2]))){
-                std::cout << j << ", " << result[j] << std::endl;
+                out_csv << result[j] << ",";
+                //std::cout << j << ", " << result[j] << std::endl;
             }
         }
+        out_csv << std::endl;
     }
 
     config_file.close();
     csv_file.close();
+    out_csv.close();
 
     return 0;
 }
