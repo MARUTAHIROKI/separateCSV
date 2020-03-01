@@ -34,7 +34,7 @@ std::vector<std::string> split(std::string str, char word){
 }
 
 // configure.txtで条件を設定
-int readConfigFile(std::ifstream* config_file, int *num) {
+int readConfigFile(std::ifstream* config_file, int *num, int& skip_num) {
 	std::string str;
 	std::vector<std::string> result;
 
@@ -55,6 +55,11 @@ int readConfigFile(std::ifstream* config_file, int *num) {
     *num = std::stoi(result[1]);
     //std::cout << *num << std::endl;
 
+    // 分割するCSVファイル数を取得
+	getline(*config_file, str);
+	result = split(str, ':');
+    skip_num = std::stoi(result[1]);
+
 	return 1;
 }
 
@@ -67,12 +72,12 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-    int csv_num;
+    int csv_num, skip_num;
     std::string line;
     std::vector<std::string> result;
 
     // 設定ファイルの読み込み
-    readConfigFile(&config_file, &csv_num);
+    readConfigFile(&config_file, &csv_num, skip_num);
 
     char filename[256];
     for(int i=0; i<csv_num; i++){
@@ -81,7 +86,13 @@ int main(int argc, char *argv[]){
     }
     
     // CSVファイルを１行ずつ読み込んで，","で分割して一定間隔でCSVファイルに保存
+    int counter = 0;
     while(getline(csv_file, line)){
+        if(counter != skip_num) {
+            counter++;
+            continue;
+        }
+
         int i=0;
         int min_col=0, max_col=result.size() / csv_num;
 
@@ -101,6 +112,7 @@ int main(int argc, char *argv[]){
         for(int k=0; k<csv_num; k++){
             out_csv[k] << std::endl;
         }
+        counter = 0;
     }
 
     // ファイルを閉じる
