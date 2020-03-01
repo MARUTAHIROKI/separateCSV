@@ -86,10 +86,10 @@ int main(int argc, char *argv[]){
     }
     
     // CSVファイルを１行ずつ読み込んで，","で分割して一定間隔でCSVファイルに保存
-    int counter = 0;
+    int skip_counter = 0, row_counter = 0;
     while(getline(csv_file, line)){
-        if(counter != skip_num) {
-            counter++;
+        if((row_counter > 3)&&(skip_counter != skip_num)) {
+            skip_counter++;
             continue;
         }
 
@@ -112,7 +112,8 @@ int main(int argc, char *argv[]){
         for(int k=0; k<csv_num; k++){
             out_csv[k] << std::endl;
         }
-        counter = 0;
+        skip_counter = 0;
+        row_counter++;
     }
 
     // ファイルを閉じる
