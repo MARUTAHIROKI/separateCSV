@@ -104,7 +104,14 @@ int main(int argc, char *argv[]){
 
         result = split(line, ',');
         for(int j=0; j<result.size(); j++){
-            if((j%4) != 0) continue; // time列だけ出力
+            if(cols_name == "x"){
+                if(((j%4) == 2) || ((j%4) == 3)) continue; // time,X軸列だけ出力
+            }else if(cols_name == "y"){
+                if(((j%4) == 1) || ((j%4) == 3)) continue; // time,Y軸列だけ出力
+            }else if(cols_name == "z"){
+                if(((j%4) == 1) || ((j%4) == 2)) continue; // time,Z軸列だけ出力
+            }
+
             if((j>=min_col)&&(j<=max_col)){
                 out_csv[i] << result[j] << ",";
                 if(max_col==j) {
