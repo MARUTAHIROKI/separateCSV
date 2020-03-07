@@ -34,7 +34,7 @@ std::vector<std::string> split(std::string str, char word){
 }
 
 // configure.txtで条件を設定
-int readConfigFile(std::ifstream& config_file, int& num, int& skip_num) {
+int readConfigFile(std::ifstream& config_file, int& num, int& skip_num, std::string& cols_num) {
 	std::string str;
 	std::vector<std::string> result;
 
@@ -60,6 +60,11 @@ int readConfigFile(std::ifstream& config_file, int& num, int& skip_num) {
 	result = split(str, ':');
     skip_num = std::stoi(result[1]);
 
+    // 抽出列の取得
+	getline(config_file, str);
+	result = split(str, ':');
+    cols_num = result[1];
+
 	return 1;
 }
 
@@ -73,11 +78,12 @@ int main(int argc, char *argv[]){
 	}
 
     int csv_num, skip_num;
+    std::string cols_num;
     std::string line;
     std::vector<std::string> result;
 
     // 設定ファイルの読み込み
-    readConfigFile(config_file, csv_num, skip_num);
+    readConfigFile(config_file, csv_num, skip_num, cols_num);
 
     char filename[256];
     for(int i=0; i<csv_num; i++){
@@ -88,7 +94,7 @@ int main(int argc, char *argv[]){
     // CSVファイルを１行ずつ読み込んで，","で分割して一定間隔でCSVファイルに保存
     int skip_counter = 0, row_counter = 0;
     while(getline(csv_file, line)){
-        if((row_counter > 3)&&(skip_counter != skip_num)) {
+        if((row_counter > 3)&&(skip_counter != skip_num)) { // スキップするか判定・実行
             skip_counter++;
             continue;
         }
