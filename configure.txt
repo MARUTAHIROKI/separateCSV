@@ -1,3 +1,4 @@
 Path(relative or absolute):/Users/marurun/Downloads/TEST4003 江口.CSV
 Separated file num　　　　　:20
 skip rows                 :100
+extracted cols(all,x,y,z) :all
