@@ -34,7 +34,7 @@ std::vector<std::string> split(std::string str, char word){
 }
 
 // configure.txtで条件を設定
-int readConfigFile(std::ifstream& config_file, int& num, int& skip_num, std::string& cols_num) {
+int readConfigFile(std::ifstream& config_file, int& num, int& skip_num, std::string& cols_name) {
 	std::string str;
 	std::vector<std::string> result;
 
@@ -63,7 +63,7 @@ int readConfigFile(std::ifstream& config_file, int& num, int& skip_num, std::str
     // 抽出列の取得
 	getline(config_file, str);
 	result = split(str, ':');
-    cols_num = result[1];
+    cols_name = result[1];
 
 	return 1;
 }
@@ -78,12 +78,12 @@ int main(int argc, char *argv[]){
 	}
 
     int csv_num, skip_num;
-    std::string cols_num;
+    std::string cols_name;
     std::string line;
     std::vector<std::string> result;
 
     // 設定ファイルの読み込み
-    readConfigFile(config_file, csv_num, skip_num, cols_num);
+    readConfigFile(config_file, csv_num, skip_num, cols_name);
 
     char filename[256];
     for(int i=0; i<csv_num; i++){
@@ -104,6 +104,7 @@ int main(int argc, char *argv[]){
 
         result = split(line, ',');
         for(int j=0; j<result.size(); j++){
+            if((j%4) != 0) continue; // time列だけ出力
             if((j>=min_col)&&(j<=max_col)){
                 out_csv[i] << result[j] << ",";
                 if(max_col==j) {
