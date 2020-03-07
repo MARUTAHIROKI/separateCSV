@@ -1,5 +1,5 @@
 // ======================================================================
-// Copyright c <2020.2.10> Hiroki Maruta. All rights reserved.
+// Copyright c <2020.3.7> Hiroki Maruta. All rights reserved.
 //
 // This source code or any portion thereof must not be  
 // reproduced or used in any manner whatsoever.
@@ -34,12 +34,12 @@ std::vector<std::string> split(std::string str, char word){
 }
 
 // configure.txtで条件を設定
-int readConfigFile(std::ifstream* config_file, int *num, int& skip_num) {
+int readConfigFile(std::ifstream& config_file, int& num, int& skip_num) {
 	std::string str;
 	std::vector<std::string> result;
 
 	// CSVファイル名の取得
-	getline(*config_file, str);
+	getline(config_file, str);
 	result = split(str, ':');
     //std::cout << result[1] << std::endl;
 
@@ -50,13 +50,13 @@ int readConfigFile(std::ifstream* config_file, int *num, int& skip_num) {
     }
 
     // 分割するCSVファイル数を取得
-	getline(*config_file, str);
+	getline(config_file, str);
 	result = split(str, ':');
-    *num = std::stoi(result[1]);
-    //std::cout << *num << std::endl;
+    num = std::stoi(result[1]);
+    //std::cout << num << std::endl;
 
-    // 分割するCSVファイル数を取得
-	getline(*config_file, str);
+    // 行スキップ数の取得
+	getline(config_file, str);
 	result = split(str, ':');
     skip_num = std::stoi(result[1]);
 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]){
     std::vector<std::string> result;
 
     // 設定ファイルの読み込み
-    readConfigFile(&config_file, &csv_num, skip_num);
+    readConfigFile(config_file, csv_num, skip_num);
 
     char filename[256];
     for(int i=0; i<csv_num; i++){
