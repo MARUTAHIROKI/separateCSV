@@ -9,8 +9,6 @@
 #include <fstream>
 #include <vector>
 
-std::ifstream csv_file;
-
 // Divide text
 std::vector<std::string> split(std::string str, char word){
 	int first = 0;
@@ -34,20 +32,15 @@ std::vector<std::string> split(std::string str, char word){
 }
 
 // configure.txtで条件を設定
-int readConfigFile(std::ifstream& config_file, int& num, int& skip_num, std::string& cols_name) {
+int readConfigFile(std::ifstream& config_file, std::string& csv_name, int& num, int& skip_num, std::string& cols_name) {
 	std::string str;
 	std::vector<std::string> result;
 
 	// CSVファイル名の取得
 	getline(config_file, str);
 	result = split(str, ':');
+    csv_name = result[1];
     //std::cout << result[1] << std::endl;
-
-    csv_file.open(result[1]);
-    if(csv_file.fail()){
-        std::cerr << "Failed to read the csv file." << std::endl;
-        return -1;
-    }
 
     // 分割するCSVファイル数を取得
 	getline(config_file, str);
@@ -70,6 +63,7 @@ int readConfigFile(std::ifstream& config_file, int& num, int& skip_num, std::str
 
 int main(int argc, char *argv[]){
     std::ifstream config_file("configure.txt");
+    std::ifstream csv_file;
     std::ofstream out_csv[256];
     
 	if (config_file.fail()) {
@@ -78,12 +72,19 @@ int main(int argc, char *argv[]){
 	}
 
     int csv_num, skip_num;
-    std::string cols_name;
+    std::string cols_name, csv_name;
     std::string line;
     std::vector<std::string> result;
 
     // 設定ファイルの読み込み
-    readConfigFile(config_file, csv_num, skip_num, cols_name);
+    readConfigFile(config_file, csv_name, csv_num, skip_num, cols_name);
+
+    // CSVファイルの読み込み
+    csv_file.open(csv_name);
+    if(csv_file.fail()){
+        std::cerr << "Failed to read the csv file." << std::endl;
+        return -1;
+    }
 
     char filename[256];
     for(int i=0; i<csv_num; i++){
