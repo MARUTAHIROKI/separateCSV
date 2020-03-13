@@ -55,24 +55,48 @@ int main(int argc, char *argv[]){
 
         int i=0;
         int min_col=0, max_col=result.size() / csv_num;
+        int find_x, find_y, find_z;
 
         result = split(line, ',');
+
         for(int j=0; j<result.size(); j++){
-            if(cols_name == "x"){
-                if(((j%4) == 2) || ((j%4) == 3)) continue; // time,X軸列だけ出力するためY,Z軸をスキップ
-            }else if(cols_name == "y"){
-                if(((j%4) == 1) || ((j%4) == 3)) continue; // time,Y軸列だけ出力
-            }else if(cols_name == "z"){
-                if(((j%4) == 1) || ((j%4) == 2)) continue; // time,Z軸列だけ出力
+            find_x = cols_name.find("x");
+            find_y = cols_name.find("y");
+            find_z = cols_name.find("z");
+
+            // time列の出力
+            if((j%4) == 0){
+                if((j>=min_col)&&(j<=max_col)){
+                    out_csv[i] << result[j] << ",";
+                }
             }
 
-            if((j>=min_col)&&(j<=max_col)){
-                out_csv[i] << result[j] << ",";
-                if(max_col==j) {
-                    min_col += result.size() / csv_num;
-                    max_col += result.size() / csv_num;
-                    i++;
+            // x列の出力
+            if(((j%4) == 1) && (find_x != std::string::npos)){
+                if((j>=min_col)&&(j<=max_col)){
+                    out_csv[i] << result[j] << ",";
                 }
+            }
+
+            // y列の出力
+            if(((j%4) == 2) && (find_y != std::string::npos)){
+                if((j>=min_col)&&(j<=max_col)){
+                    out_csv[i] << result[j] << ",";
+                }
+            }
+
+            // z列の出力
+            if(((j%4) == 3) && (find_z != std::string::npos)){
+                if((j>=min_col)&&(j<=max_col)){
+                    out_csv[i] << result[j] << ",";
+                }
+            }
+
+            // ファイルの分割する列の更新
+            if(max_col==j) {
+                min_col += result.size() / csv_num;
+                max_col += result.size() / csv_num;
+                i++;)
             }
         }
 
