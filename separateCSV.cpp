@@ -39,6 +39,10 @@ int main(int argc, char *argv[]){
         return -1;
     }
 
+    int find_x = cols_name.find("x");
+    int find_y = cols_name.find("y");
+    int find_z = cols_name.find("z");
+
     char filename[256];
     for(int i=0; i<csv_num; i++){
         sprintf(filename, "separated%03d.csv", i);
@@ -53,17 +57,15 @@ int main(int argc, char *argv[]){
             continue;
         }
 
-        int i=0;
-        int min_col=0, max_col=result.size() / csv_num;
-        int find_x, find_y, find_z;
-
         result = split(line, ',');
 
-        for(int j=0; j<result.size(); j++){
-            find_x = cols_name.find("x");
-            find_y = cols_name.find("y");
-            find_z = cols_name.find("z");
+        int i=0;
+        int onefile_cols = result.size() / csv_num;
+        int min_col=0, max_col=onefile_cols;
 
+        //std::cout << "onefile_col = " << onefile_cols << std::endl;
+
+        for(int j=0; j<result.size(); j++){
             // time列の出力
             if((j%4) == 0){
                 if((j>=min_col)&&(j<=max_col)){
@@ -94,9 +96,9 @@ int main(int argc, char *argv[]){
 
             // ファイルの分割する列の更新
             if(max_col==j) {
-                min_col += result.size() / csv_num;
-                max_col += result.size() / csv_num;
-                i++;)
+                min_col += onefile_cols;
+                max_col += onefile_cols;
+                i++;
             }
         }
 
