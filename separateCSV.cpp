@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <sys/stat.h>
 
 // プロトタイプ宣言
 std::vector<std::string> split(std::string str, char word);
@@ -23,6 +24,8 @@ int main(int argc, char *argv[]){
 		std::cerr << "Failed to read the config file." << std::endl;
 		return -1;
 	}
+
+    mkdir("output", 0777);
 
     int csv_num, skip_num;
     std::string cols_name, csv_name;
@@ -45,7 +48,7 @@ int main(int argc, char *argv[]){
 
     char filename[256];
     for(int i=0; i<csv_num; i++){
-        sprintf(filename, "separated%03d.csv", i);
+        sprintf(filename, "output/separated%03d.csv", i);
         out_csv[i].open(filename);
     }
     
