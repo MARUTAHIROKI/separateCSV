@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <iomanip> //時間を取得するため
 
 // プロトタイプ宣言
 std::vector<std::string> split(std::string str, char word);
@@ -39,6 +40,22 @@ int main(int argc, char *argv[]){
         return -1;
     }
 
+    // CSVファイルのサイズを計算
+    csv_file.seekg( 0, std::ios_base::end); // 一番最後までseek
+    int csv_file_size = csv_file.tellg(); // 現在のポインタ位置取得
+    csv_file.seekg( 0, std::ios_base::beg); // 一番先頭までseek
+    //std::cout << "ファイルサイズは" << csv_file_size << "バイトです。" << std::endl;
+
+    //現在日時を取得する
+    time_t t = time(nullptr);  
+    const tm* lt = localtime(&t); //形式を変換する  
+    
+    //sに独自フォーマットになるように連結していく
+    std::cout << "20" << lt->tm_year-100 //100を引くことで20xxのxxの部分になる
+    <<"-" << lt->tm_mon+1 //月を0からカウントしているため
+    <<"-" << lt->tm_mday << std::endl; //そのまま
+
+
     char filename[256];
     for(int i=0; i<csv_num; i++){
         sprintf(filename, "separated%03d.csv", i);
@@ -47,7 +64,12 @@ int main(int argc, char *argv[]){
     
     // CSVファイルを１行ずつ読み込んで，","で分割して一定間隔でCSVファイルに保存
     int skip_counter = 0, row_counter = 0;
+    size_t row_sum_size = 0;
     while(getline(csv_file, line)){
+        // 進捗状況を出力
+        row_sum_size += line.length();
+        std::cout << "\r" << (int)((double)row_sum_size / (double)csv_file_size * 100) << "%";
+
         if((row_counter > 3)&&(skip_counter != skip_num)) { // スキップするか判定・実行
             skip_counter++;
             continue;
@@ -84,12 +106,17 @@ int main(int argc, char *argv[]){
         row_counter++;
     }
 
+    std::cout << "\r" << 100 << "%" << std::endl; // 99％で更新が終わるため
+
     // ファイルを閉じる
     config_file.close();
     csv_file.close();
     for(int i=0; i<csv_num; i++){
         out_csv[i].close();
     }
+
+    int temp;
+    std::cin >> temp;
 
     return 0;
 }
