@@ -25,7 +25,7 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-    mkdir("output", 0777);
+    mkdir("output", 0755);
 
     int csv_num, skip_num;
     std::string cols_name, csv_name;
